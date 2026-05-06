@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulador Nota de Voz (VHDL)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --text: #e5e7eb;
+      --accent: #22c55e;
+      --muted: #94a3b8;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #1e293b, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+    .card {
+      width: min(760px, 95vw);
+      background: rgba(17, 24, 39, .95);
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 16px 32px rgba(0,0,0,.35);
+    }
+    h1 { margin: 0 0 12px; font-size: 1.4rem; }
+    p { color: var(--muted); margin: 0 0 16px; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    label { font-size: .92rem; color: #cbd5e1; }
+    input, select, button {
+      font: inherit;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0b1220;
+      color: var(--text);
+      padding: 8px 10px;
+    }
+    button { cursor: pointer; }
+    button.primary {
+      background: #14532d;
+      border-color: #166534;
+    }
+    button.secondary { background: #1e293b; }
+
+    .display {
+      margin-top: 16px;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+    .time {
+      font-family: "Courier New", monospace;
+      font-size: 3rem;
+      letter-spacing: 2px;
+      color: #86efac;
+    }
+    .meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      border: 1px solid #475569;
+      background: #0b1220;
+      border-radius: 999px;
+      padding: 6px 12px;
+      color: #cbd5e1;
+      font-size: .9rem;
+    }
+    .led {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+      border: 1px solid #475569;
+      background: #334155;
+      box-shadow: 0 0 0 transparent;
+      transition: all .15s linear;
+    }
+    .led.on {
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(34,197,94,.8);
+      border-color: #4ade80;
+    }
+    .warn { color: #fca5a5; font-size: .9rem; min-height: 1.2em; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Simulador de Reproducción de Nota de Voz</h1>
+    <p>Modelo digital equivalente al diseño VHDL: cuenta de <b>00:00</b> al tiempo objetivo (máx. <b>05:00</b>) con velocidades <b>1x / 1.5x / 2x</b>.</p>
+
+    <section class="grid">
+      <div>
+        <label for="min">Minutos (0-5)</label>
+        <input id="min" type="number" min="0" max="5" value="0" />
+      </div>
+      <div>
+        <label for="sec">Segundos (0-59)</label>
+        <input id="sec" type="number" min="0" max="59" value="20" />
+      </div>
+      <div>
+        <label for="speed">Velocidad</label>
+        <select id="speed">
+          <option value="1">1x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+      </div>
+      <div class="row" style="align-self:end;">
+        <button id="startBtn" class="primary">Start</button>
+        <button id="resetBtn" class="secondary">Reset</button>
+      </div>
+    </section>
+
+    <div class="warn" id="msg"></div>
+
+    <section class="display">
+      <div class="time" id="timer">00:00</div>
+      <div class="meta">
+        <div class="pill">Objetivo: <span id="targetLabel">00:20</span></div>
+        <div class="pill">Velocidad actual: <span id="speedLabel">1x</span></div>
+        <div class="pill"><span class="led" id="led"></span>Fin: <span id="doneTxt">0</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const minEl = document.getElementById('min');
+    const secEl = document.getElementById('sec');
+    const speedEl = document.getElementById('speed');
+    const timerEl = document.getElementById('timer');
+    const ledEl = document.getElementById('led');
+    const doneTxtEl = document.getElementById('doneTxt');
+    const targetLabelEl = document.getElementById('targetLabel');
+    const speedLabelEl = document.getElementById('speedLabel');
+    const msgEl = document.getElementById('msg');
+
+    let elapsed = 0;
+    let target = 20;
+    let run = false;
+    let done = false;
+    let intervalId = null;
+
+    function fmtTime(total) {
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function updateView() {
+      timerEl.textContent = fmtTime(elapsed);
+      targetLabelEl.textContent = fmtTime(target);
+      speedLabelEl.textContent = `${speedEl.value}x`.replace('1x', '1x').replace('1.5x', '1.5x').replace('2x', '2x');
+      doneTxtEl.textContent = done ? '1' : '0';
+      ledEl.classList.toggle('on', done);
+    }
+
+    function clampInputs() {
+      let m = Number(minEl.value);
+      let s = Number(secEl.value);
+      m = Number.isFinite(m) ? m : 0;
+      s = Number.isFinite(s) ? s : 0;
+
+      m = Math.max(0, Math.min(5, Math.floor(m)));
+      s = Math.max(0, Math.min(59, Math.floor(s)));
+
+      minEl.value = m;
+      secEl.value = s;
+
+      target = m * 60 + s;
+      if (target > 300) {
+        target = 300;
+        minEl.value = 5;
+        secEl.value = 0;
+      }
+    }
+
+    function clearPlaybackTimer() {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    function startPlayback() {
+      clampInputs();
+      msgEl.textContent = '';
+
+      if (target <= 0) {
+        msgEl.textContent = 'Configura un tiempo mayor que 00:00.';
+        return;
+      }
+
+      elapsed = 0;
+      done = false;
+      run = true;
+      updateView();
+
+      const speed = Number(speedEl.value);
+      const tickMs = Math.round(1000 / speed); // 1x=1000, 1.5x~667, 2x=500
+
+      clearPlaybackTimer();
+      intervalId = setInterval(() => {
+        if (!run) return;
+
+        elapsed += 1;
+        if (elapsed >= target) {
+          elapsed = target;
+          run = false;
+          done = true;
+          clearPlaybackTimer();
+        }
+        updateView();
+      }, tickMs);
+    }
+
+    function resetAll() {
+      run = false;
+      done = false;
+      elapsed = 0;
+      clearPlaybackTimer();
+      msgEl.textContent = '';
+      clampInputs();
+      updateView();
+    }
+
+    document.getElementById('startBtn').addEventListener('click', startPlayback);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+    minEl.addEventListener('input', () => { clampInputs(); updateView(); });
+    secEl.addEventListener('input', () => { clampInputs(); updateView(); });
+    speedEl.addEventListener('change', updateView);
+
+    clampInputs();
+    updateView();
+  </script>
+</body>
+</html>
