@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Main para servir la vista web del circuito."""
+"""Servidor local para visualizar el circuito en la web."""
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 HOST = "0.0.0.0"
@@ -8,7 +8,7 @@ PORT = 8000
 
 def main() -> None:
     server = ThreadingHTTPServer((HOST, PORT), SimpleHTTPRequestHandler)
-    print(f"Servidor activo: http://localhost:{PORT}")
+    print(f"Servidor activo en: http://localhost:{PORT}")
     print("Presiona Ctrl+C para detener.")
     try:
         server.serve_forever()
