@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circuito Logisim - Reproductor de Nota de Voz</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#0b1020;color:#e5e7eb}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px}
+    p{color:#9ca3af}
+    .panel{background:#111827;border:1px solid #374151;border-radius:12px;padding:16px;margin-top:16px}
+    .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .tag{padding:6px 10px;border-radius:999px;border:1px solid #4b5563;background:#1f2937;font-size:12px}
+    svg{width:100%;height:auto;background:#0f172a;border-radius:10px;border:1px solid #334155}
+    .box{fill:#1e293b;stroke:#93c5fd;stroke-width:2}
+    .txt{fill:#e5e7eb;font-size:14px;font-weight:700}
+    .sub{fill:#93c5fd;font-size:11px}
+    .wire{stroke:#a7f3d0;stroke-width:2;fill:none;marker-end:url(#arrow)}
+    .wire2{stroke:#fcd34d;stroke-width:2;fill:none;marker-end:url(#arrow2)}
+    code{background:#1f2937;padding:2px 6px;border-radius:6px}
+    ul{line-height:1.6}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Circuito completo (tipo Logisim) - Vista Web</h1>
+    <p>Diagrama visual por bloques + señales para que lo copies tal cual en Logisim.</p>
+
+    <div class="panel">
+      <svg viewBox="0 0 1200 620" role="img" aria-label="Diagrama de bloques del circuito">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#a7f3d0"></polygon>
+          </marker>
+          <marker id="arrow2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#fcd34d"></polygon>
+          </marker>
+        </defs>
+
+        <rect x="40" y="70" width="190" height="90" class="box"/>
+        <text x="135" y="108" text-anchor="middle" class="txt">TARGET_MMSS</text>
+        <text x="135" y="130" text-anchor="middle" class="sub">M*60 + T*10 + U</text>
+
+        <rect x="300" y="70" width="190" height="90" class="box"/>
+        <text x="395" y="108" text-anchor="middle" class="txt">SPEED_DIV</text>
+        <text x="395" y="130" text-anchor="middle" class="sub">1x / 1.5x / 2x</text>
+
+        <rect x="560" y="70" width="220" height="90" class="box"/>
+        <text x="670" y="108" text-anchor="middle" class="txt">CTRL_START_DONE</text>
+        <text x="670" y="130" text-anchor="middle" class="sub">START_EDGE, RUN, DONE</text>
+
+        <rect x="850" y="70" width="220" height="90" class="box"/>
+        <text x="960" y="108" text-anchor="middle" class="txt">ELAPSED_COUNTER</text>
+        <text x="960" y="130" text-anchor="middle" class="sub">ELAPSED_TOTAL[8:0]</text>
+
+        <rect x="850" y="250" width="220" height="90" class="box"/>
+        <text x="960" y="288" text-anchor="middle" class="txt">BIN_TO_MMSS</text>
+        <text x="960" y="310" text-anchor="middle" class="sub">M, SecT, SecU</text>
+
+        <rect x="850" y="430" width="220" height="90" class="box"/>
+        <text x="960" y="468" text-anchor="middle" class="txt">DISPLAY_7SEG</text>
+        <text x="960" y="490" text-anchor="middle" class="sub">3 displays + SPEED LEDs</text>
+
+        <circle cx="1120" cy="115" r="16" fill="#22c55e" stroke="#86efac" stroke-width="2"/>
+        <text x="1120" y="145" text-anchor="middle" class="sub">DONE_LED</text>
+
+        <path d="M230,115 L300,115" class="wire"/>
+        <text x="260" y="105" class="sub">TARGET_TOTAL[8:0]</text>
+
+        <path d="M490,115 L560,115" class="wire"/>
+        <text x="510" y="105" class="sub">TICK_EN</text>
+
+        <path d="M780,115 L850,115" class="wire"/>
+        <text x="795" y="105" class="sub">RUN</text>
+
+        <path d="M1070,115 L1104,115" class="wire2"/>
+
+        <path d="M960,160 L960,250" class="wire"/>
+        <text x="968" y="214" class="sub">ELAPSED_TOTAL</text>
+
+        <path d="M960,340 L960,430" class="wire"/>
+        <text x="968" y="394" class="sub">CUR_MIN/SEC</text>
+
+        <path d="M560,145 C520,220 760,220 850,295" class="wire"/>
+        <text x="620" y="220" class="sub">START_EDGE</text>
+
+        <text x="40" y="45" class="sub">Entradas: CLK, RST, START, SPEED[1:0], T_MIN[2:0], T_SEC_T[2:0], T_SEC_U[3:0]</text>
+      </svg>
+
+      <div class="legend">
+        <span class="tag">SPEED=00 -> 1x</span>
+        <span class="tag">SPEED=01 -> 1.5x</span>
+        <span class="tag">SPEED=10 -> 2x</span>
+        <span class="tag">TARGET_TOTAL = M*60 + T*10 + U</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Valores para armar rápido en Logisim</h2>
+      <ul>
+        <li><code>LIMIT_1X = Fclk - 1</code></li>
+        <li><code>LIMIT_1_5X = (2*Fclk)/3 - 1</code></li>
+        <li><code>LIMIT_2X = Fclk/2 - 1</code></li>
+        <li><code>INC_EN = RUN AND TICK_EN</code></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
