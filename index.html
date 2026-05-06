@@ -4,107 +4,111 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Circuito Logisim - Reproductor de Nota de Voz</title>
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#0b1020;color:#e5e7eb}
-    .wrap{max-width:1200px;margin:0 auto;padding:24px}
-    h1{margin:0 0 8px}
-    p{color:#9ca3af}
-    .panel{background:#111827;border:1px solid #374151;border-radius:12px;padding:16px;margin-top:16px}
-    .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .tag{padding:6px 10px;border-radius:999px;border:1px solid #4b5563;background:#1f2937;font-size:12px}
-    svg{width:100%;height:auto;background:#0f172a;border-radius:10px;border:1px solid #334155}
-    .box{fill:#1e293b;stroke:#93c5fd;stroke-width:2}
-    .txt{fill:#e5e7eb;font-size:14px;font-weight:700}
-    .sub{fill:#93c5fd;font-size:11px}
-    .wire{stroke:#a7f3d0;stroke-width:2;fill:none;marker-end:url(#arrow)}
-    .wire2{stroke:#fcd34d;stroke-width:2;fill:none;marker-end:url(#arrow2)}
-    code{background:#1f2937;padding:2px 6px;border-radius:6px}
-    ul{line-height:1.6}
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="wrap">
-    <h1>Circuito completo (tipo Logisim) - Vista Web</h1>
-    <p>Diagrama visual por bloques + señales para que lo copies tal cual en Logisim.</p>
+  <main class="container">
+    <header>
+      <h1>Circuito Final (Logisim) - Vista Web</h1>
+      <p>Versión rehecha: bloques, conexiones y fórmulas listas para copiar en Logisim.</p>
+    </header>
 
-    <div class="panel">
-      <svg viewBox="0 0 1200 620" role="img" aria-label="Diagrama de bloques del circuito">
+    <section class="card">
+      <h2>Diagrama principal</h2>
+      <svg viewBox="0 0 1280 700" aria-label="Diagrama del circuito">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#a7f3d0"></polygon>
+          <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#86efac" />
           </marker>
-          <marker id="arrow2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#fcd34d"></polygon>
+          <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#93c5fd" />
           </marker>
         </defs>
 
-        <rect x="40" y="70" width="190" height="90" class="box"/>
-        <text x="135" y="108" text-anchor="middle" class="txt">TARGET_MMSS</text>
-        <text x="135" y="130" text-anchor="middle" class="sub">M*60 + T*10 + U</text>
+        <g class="block" transform="translate(40,90)">
+          <rect width="210" height="100" />
+          <text x="105" y="45">TARGET_MMSS</text>
+          <text x="105" y="70" class="sub">M*60 + T*10 + U</text>
+        </g>
 
-        <rect x="300" y="70" width="190" height="90" class="box"/>
-        <text x="395" y="108" text-anchor="middle" class="txt">SPEED_DIV</text>
-        <text x="395" y="130" text-anchor="middle" class="sub">1x / 1.5x / 2x</text>
+        <g class="block" transform="translate(320,90)">
+          <rect width="210" height="100" />
+          <text x="105" y="45">SPEED_DIV</text>
+          <text x="105" y="70" class="sub">1x / 1.5x / 2x</text>
+        </g>
 
-        <rect x="560" y="70" width="220" height="90" class="box"/>
-        <text x="670" y="108" text-anchor="middle" class="txt">CTRL_START_DONE</text>
-        <text x="670" y="130" text-anchor="middle" class="sub">START_EDGE, RUN, DONE</text>
+        <g class="block" transform="translate(600,90)">
+          <rect width="240" height="100" />
+          <text x="120" y="45">CTRL_START_DONE</text>
+          <text x="120" y="70" class="sub">START_EDGE, RUN, DONE</text>
+        </g>
 
-        <rect x="850" y="70" width="220" height="90" class="box"/>
-        <text x="960" y="108" text-anchor="middle" class="txt">ELAPSED_COUNTER</text>
-        <text x="960" y="130" text-anchor="middle" class="sub">ELAPSED_TOTAL[8:0]</text>
+        <g class="block" transform="translate(920,90)">
+          <rect width="260" height="100" />
+          <text x="130" y="45">ELAPSED_COUNTER</text>
+          <text x="130" y="70" class="sub">ELAPSED_TOTAL[8:0]</text>
+        </g>
 
-        <rect x="850" y="250" width="220" height="90" class="box"/>
-        <text x="960" y="288" text-anchor="middle" class="txt">BIN_TO_MMSS</text>
-        <text x="960" y="310" text-anchor="middle" class="sub">M, SecT, SecU</text>
+        <g class="block" transform="translate(920,280)">
+          <rect width="260" height="100" />
+          <text x="130" y="45">BIN_TO_MMSS</text>
+          <text x="130" y="70" class="sub">CUR_MIN / SEC_T / SEC_U</text>
+        </g>
 
-        <rect x="850" y="430" width="220" height="90" class="box"/>
-        <text x="960" y="468" text-anchor="middle" class="txt">DISPLAY_7SEG</text>
-        <text x="960" y="490" text-anchor="middle" class="sub">3 displays + SPEED LEDs</text>
+        <g class="block" transform="translate(920,470)">
+          <rect width="260" height="100" />
+          <text x="130" y="45">DISPLAY_7SEG</text>
+          <text x="130" y="70" class="sub">M:SS + SPEED LEDs</text>
+        </g>
 
-        <circle cx="1120" cy="115" r="16" fill="#22c55e" stroke="#86efac" stroke-width="2"/>
-        <text x="1120" y="145" text-anchor="middle" class="sub">DONE_LED</text>
+        <circle cx="1220" cy="140" r="16" class="led" />
+        <text x="1220" y="170" class="sub" text-anchor="middle">DONE_LED</text>
 
-        <path d="M230,115 L300,115" class="wire"/>
-        <text x="260" y="105" class="sub">TARGET_TOTAL[8:0]</text>
+        <path d="M250 140 L320 140" class="wire" marker-end="url(#arrowGreen)" />
+        <text x="258" y="130" class="label">TARGET_TOTAL[8:0]</text>
 
-        <path d="M490,115 L560,115" class="wire"/>
-        <text x="510" y="105" class="sub">TICK_EN</text>
+        <path d="M530 140 L600 140" class="wire" marker-end="url(#arrowGreen)" />
+        <text x="545" y="130" class="label">TICK_EN</text>
 
-        <path d="M780,115 L850,115" class="wire"/>
-        <text x="795" y="105" class="sub">RUN</text>
+        <path d="M840 140 L920 140" class="wire" marker-end="url(#arrowGreen)" />
+        <text x="852" y="130" class="label">RUN</text>
 
-        <path d="M1070,115 L1104,115" class="wire2"/>
+        <path d="M1180 140 L1204 140" class="wire-blue" marker-end="url(#arrowBlue)" />
 
-        <path d="M960,160 L960,250" class="wire"/>
-        <text x="968" y="214" class="sub">ELAPSED_TOTAL</text>
+        <path d="M1050 190 L1050 280" class="wire" marker-end="url(#arrowGreen)" />
+        <text x="1060" y="245" class="label">ELAPSED_TOTAL</text>
 
-        <path d="M960,340 L960,430" class="wire"/>
-        <text x="968" y="394" class="sub">CUR_MIN/SEC</text>
+        <path d="M1050 380 L1050 470" class="wire" marker-end="url(#arrowGreen)" />
+        <text x="1060" y="435" class="label">CUR_MIN/SEC</text>
 
-        <path d="M560,145 C520,220 760,220 850,295" class="wire"/>
-        <text x="620" y="220" class="sub">START_EDGE</text>
+        <path d="M600 175 C560 250, 860 250, 920 320" class="wire" marker-end="url(#arrowGreen)" />
+        <text x="680" y="260" class="label">START_EDGE</text>
 
-        <text x="40" y="45" class="sub">Entradas: CLK, RST, START, SPEED[1:0], T_MIN[2:0], T_SEC_T[2:0], T_SEC_U[3:0]</text>
+        <text x="40" y="50" class="sub">Entradas: CLK, RST, START, SPEED[1:0], T_MIN[2:0], T_SEC_T[2:0], T_SEC_U[3:0]</text>
       </svg>
+    </section>
 
-      <div class="legend">
-        <span class="tag">SPEED=00 -> 1x</span>
-        <span class="tag">SPEED=01 -> 1.5x</span>
-        <span class="tag">SPEED=10 -> 2x</span>
-        <span class="tag">TARGET_TOTAL = M*60 + T*10 + U</span>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>Valores para armar rápido en Logisim</h2>
-      <ul>
-        <li><code>LIMIT_1X = Fclk - 1</code></li>
-        <li><code>LIMIT_1_5X = (2*Fclk)/3 - 1</code></li>
-        <li><code>LIMIT_2X = Fclk/2 - 1</code></li>
-        <li><code>INC_EN = RUN AND TICK_EN</code></li>
-      </ul>
-    </div>
-  </div>
+    <section class="card two-col">
+      <article>
+        <h2>Fórmulas clave</h2>
+        <ul>
+          <li><code>TARGET_TOTAL = T_MIN*60 + T_SEC_T*10 + T_SEC_U</code></li>
+          <li><code>LIMIT_1X = Fclk - 1</code></li>
+          <li><code>LIMIT_1_5X = (2*Fclk)/3 - 1</code></li>
+          <li><code>LIMIT_2X = Fclk/2 - 1</code></li>
+          <li><code>INC_EN = RUN AND TICK_EN</code></li>
+        </ul>
+      </article>
+      <article>
+        <h2>Checklist de armado</h2>
+        <ul>
+          <li>Solo 6 bloques + <code>DONE_LED</code>.</li>
+          <li><code>ELAPSED_TOTAL</code> debe ser de 9 bits (0..300).</li>
+          <li>En 00:20, debe encender LED justo al final.</li>
+          <li>Cambiar SPEED debe cambiar tiempo real de finalización.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
 </body>
 </html>

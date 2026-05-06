@@ -1,4 +1,4 @@
-# Ver el circuito en la web
+# Circuito Logisim en Web
 
 ## Ejecutar todo
 
@@ -6,11 +6,13 @@
 python3 main.py
 ```
 
-Luego abre:
+Abrir en navegador:
 
 - http://localhost:8000
 
-## Qué verás
+## Archivos
 
-- `index.html`: diagrama visual del circuito por bloques (tipo Logisim)
-- `CIRCUITOS_LOGISIM.md`: guía textual limpia del mismo circuito
+- `index.html`: diagrama completo del circuito
+- `styles.css`: estilos de visualización
+- `main.py`: servidor local
+- `CIRCUITOS_LOGISIM.md`: guía textual del circuito

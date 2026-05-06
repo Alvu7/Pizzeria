@@ -1,0 +1,38 @@
+:root {
+  --bg: #0b1020;
+  --panel: #111827;
+  --border: #334155;
+  --text: #e5e7eb;
+  --muted: #93c5fd;
+  --green: #86efac;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: radial-gradient(circle at top, #1e293b, var(--bg));
+  color: var(--text);
+}
+.container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+h1 { margin: 0 0 8px; }
+p { margin: 0; color: #9ca3af; }
+.card {
+  margin-top: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+svg { width: 100%; height: auto; background: #0f172a; border-radius: 10px; border: 1px solid var(--border); }
+.block rect { fill: #1e293b; stroke: var(--muted); stroke-width: 2; rx: 8; }
+.block text { fill: var(--text); font-size: 16px; font-weight: 700; text-anchor: middle; }
+.block .sub { fill: var(--muted); font-size: 12px; font-weight: 500; }
+.sub { fill: var(--muted); font-size: 12px; }
+.label { fill: var(--green); font-size: 12px; }
+.wire { stroke: var(--green); stroke-width: 2; fill: none; }
+.wire-blue { stroke: #93c5fd; stroke-width: 2; fill: none; }
+.led { fill: #22c55e; stroke: #bbf7d0; stroke-width: 2; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+code { background: #1f2937; border: 1px solid #374151; padding: 2px 6px; border-radius: 6px; }
+ul { margin: 0; padding-left: 18px; line-height: 1.7; }
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
